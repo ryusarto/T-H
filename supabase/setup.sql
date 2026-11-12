@@ -85,7 +85,14 @@ with check (bucket_id = 'vault' and public.can_vault_edit());
 -- Permite compensação de upload que falhou ao gravar metadados.
 create policy "vault editors can remove own uploads"
 on storage.objects for delete to authenticated
-using (bucket_id = 'vault' and public.can_vault_edit() and owner_id = (select auth.uid())::text);
+using (
+  bucket_id = 'vault'
+  and public.can_vault_edit()
+  and owner_id = (select auth.uid())::text
+  and not exists (
+    select 1 from public.assets a where a.storage_path = name
+  )
+);
 
 -- OBS: se executar este script novamente, create policy pode falhar com
 -- "policy already exists". Execute só uma vez por projeto ou ajuste manualmente.
