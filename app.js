@@ -1,5 +1,6 @@
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
 import { installVaultUpgrade } from "./vault-upgrade.js";
+import { installKnowledge } from "./vault-knowledge.js";
 
 const $ = (id) => document.getElementById(id);
 const CONFIG_KEY = "ht_vault_config_v1";
@@ -153,6 +154,7 @@ async function loadAssets() {
   $("projectCount").textContent = String(new Set(assets.map((a) => a.project.trim()).filter(Boolean)).size).padStart(2, "0");
   renderAssets();
   await upgrade.onLoaded();
+  await knowledge.refresh();
 }
 function visibleAssets() {
   const text = normalize($("searchInput").value.trim());
@@ -455,5 +457,10 @@ const upgrade = installVaultUpgrade({
   $, esc, notice, getDb: () => db, getAssets: () => assets,
   getUser: () => user, getRole: () => role, getPreviews: () => previews,
   renderAssets, openDetail, stableLink, signedUrl, copy, bytes, date
+});
+const knowledge = installKnowledge({
+  $, esc, notice, getDb: () => db, getAssets: () => assets,
+  getUser: () => user, getRole: () => role,
+  reload: loadAssets, openDetail, bytes
 });
 initClient();
