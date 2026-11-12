@@ -1,4 +1,5 @@
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+import { installVaultUpgrade } from "./vault-upgrade.js";
 
 const $ = (id) => document.getElementById(id);
 const CONFIG_KEY = "ht_vault_config_v1";
@@ -148,12 +149,14 @@ async function loadAssets() {
   $("artistCount").textContent = String(new Set(assets.map((a) => a.artist.trim()).filter(Boolean)).size).padStart(2, "0");
   $("projectCount").textContent = String(new Set(assets.map((a) => a.project.trim()).filter(Boolean)).size).padStart(2, "0");
   renderAssets();
+  await upgrade.onLoaded();
 }
 function visibleAssets() {
   const text = normalize($("searchInput").value.trim());
   const kind = $("kindFilter").value;
   return assets.filter((item) => {
     if (kind !== "all" && item.kind !== kind) return false;
+    if (!upgrade.passes(item)) return false;
     const haystack = normalize([item.title, item.artist, item.project, item.description, ...(item.tags || [])].join(" "));
     return !text || haystack.includes(text);
   });
@@ -180,6 +183,7 @@ function renderAssets() {
     "</button>"
   ).join("");
   $("emptyState").classList.toggle("hidden", shown.length !== 0);
+  upgrade.syncCards();
   loadPreviews(shown.slice(0, 70));
 }
 async function loadPreviews(list) {
@@ -245,7 +249,8 @@ function openDetail(id) {
     '<button class="ghost" type="button" data-action="link">Copiar link interno</button>' +
     '<button class="ghost" type="button" data-action="temp">Link temporário (1h)</button></div>';
   $("detailDialog").dataset.assetId = item.id;
-  $("detailDialog").showModal();
+  if (!$("detailDialog").open) $("detailDialog").showModal();
+  upgrade.decorateDetail(item);
 }
 function info(label, value) {
   return "<div><small>" + esc(label) + "</small><strong>" + esc(value) + "</strong></div>";
@@ -301,6 +306,7 @@ async function saveAsset(event) {
   const project = $("assetProject").value.trim();
   const tags = $("assetTags").value.split(",").map((t) => t.trim()).filter(Boolean).slice(0, 30);
   const description = $("assetDescription").value.trim();
+  const additional = upgrade.extraFields();
   if (!file || !title) return notice("Selecione um arquivo e informe o nome.", true);
   if (file.size > MAX_FILE_SIZE) return notice("Limite do MVP: 50 MB por arquivo.", true);
   if (file.size > 6 * 1024 * 1024) {
@@ -321,13 +327,16 @@ async function saveAsset(event) {
     });
     if (upload.error) throw upload.error;
     uploaded = true;
-    const { error } = await db.from("assets").insert({
+    const relationIds = await upgrade.relations();
+    const { data: inserted, error } = await db.from("assets").insert({
       title, kind, artist, project, tags, description, rights_scope: rights,
+      ...additional, ...relationIds,
       asset_key: key, version, storage_path: path, file_name: file.name,
       mime_type: file.type || "application/octet-stream",
       file_size: file.size, created_by: user.id
-    });
+    }).select("id").single();
     if (error) throw error;
+    await upgrade.afterSave(inserted.id, additional);
     $("uploadDialog").close();
     notice("Asset salvo na nuvem como V" + version + ".");
     await loadAssets();
@@ -413,7 +422,7 @@ $("refreshBtn").addEventListener("click", loadAssets);
 $("exportBtn").addEventListener("click", exportCatalog);
 $("assetGrid").addEventListener("click", (event) => {
   const card = event.target.closest("[data-id]");
-  if (card) openDetail(card.dataset.id);
+  if (card && !upgrade.handleAssetCardClick(card.dataset.id)) openDetail(card.dataset.id);
 });
 $("closeUploadBtn").addEventListener("click", () => $("uploadDialog").close());
 $("cancelUploadBtn").addEventListener("click", () => $("uploadDialog").close());
@@ -439,4 +448,9 @@ dropzone.addEventListener("drop", (event) => {
   updateFileName();
 });
 
+const upgrade = installVaultUpgrade({
+  $, esc, notice, getDb: () => db, getAssets: () => assets,
+  getUser: () => user, getRole: () => role, getPreviews: () => previews,
+  renderAssets, openDetail, stableLink, signedUrl, copy, bytes, date
+});
 initClient();
