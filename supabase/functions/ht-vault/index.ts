@@ -67,7 +67,7 @@ function exposed(a:any){
 async function assetsSearch(claim:Claim,args:any){
  const limit=Math.min(Math.max(Number(args?.limit)||25,1),MAX_RESULTS);
  let query=adminDb.from("assets").select("*").in("project",claim.allowed_projects)
-  .neq("status","archived").order("created_at",{ascending:false}).limit(limit);
+  .neq("status","archived").neq("rights_scope","restricted").order("created_at",{ascending:false}).limit(500);
  for(const field of ["project","artist","character","chapter","kind","status","direction","animation_name"]){
    const value=clean(args?.[field]);
    if(value)query=query.eq(field,value);
@@ -76,12 +76,12 @@ async function assetsSearch(claim:Claim,args:any){
  if(error)throw new Error("Search unavailable");
  const search=clean(args?.q).toLocaleLowerCase("pt-BR");
  const filtered=search?(data||[]).filter(a=>[a.title,a.artist,a.project,a.character,a.chapter,a.scene,a.description,...(a.tags||[])].join(" ").toLocaleLowerCase("pt-BR").includes(search)):(data||[]);
- return {items:filtered.map(exposed),count:filtered.length,limit};
+ return {items:filtered.slice(0,limit).map(exposed),count:filtered.length,limit};
 }
 async function findAsset(claim:Claim,id:string){
  if(!isUuid(id))return null;
  const {data,error}=await adminDb.from("assets").select("*").eq("id",id).maybeSingle();
- if(error||!data||data.status==="archived"||!within(claim,data.project))return null;
+ if(error||!data||data.status==="archived"||data.rights_scope==="restricted"||!within(claim,data.project))return null;
  return data;
 }
 async function downloadLink(claim:Claim,args:any){
