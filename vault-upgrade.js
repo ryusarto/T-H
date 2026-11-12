@@ -131,9 +131,10 @@ export function installVaultUpgrade(ctx) {
     document.querySelectorAll(".vault-tab").forEach(btn => btn.classList.toggle("active",btn.dataset.vaultTab === tab));
     sel("collectionsPanel").classList.toggle("hidden",tab !== "collections");
     sel("packsPanel").classList.toggle("hidden",tab !== "packs");
+    if(sel("knowledgePanel")) sel("knowledgePanel").classList.toggle("hidden",tab !== "knowledge");
     for(const selector of [".section-header",".toolbar",".facet-toolbar",".library-meta","#assetGrid","#emptyState"]) {
       const el = sel("libraryScreen").querySelector(selector);
-      if(el) el.classList.toggle("vault-hidden", tab === "collections");
+      if(el) el.classList.toggle("vault-hidden", tab === "collections" || tab === "knowledge");
     }
     sel("selectionRibbon").classList.toggle("hidden",tab !== "packs");
     if(tab === "packs") {
