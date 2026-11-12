@@ -1,0 +1,38 @@
+
+/* H&T Vault / Knowledge */
+.knowledge-counts{display:flex;align-items:center;justify-content:space-between;gap:15px;padding:19px 22px;background:linear-gradient(135deg,#302c4a,#22243a);border:1px solid #48445c;border-radius:16px;margin-bottom:18px}
+.knowledge-counts strong{font-family:"Space Grotesk",sans-serif;font-size:18px}
+.knowledge-counts span{color:#c5badf;font-size:12px;font-weight:750}
+.knowledge-search{display:flex;gap:12px;margin-bottom:20px}
+.knowledge-search input{min-width:0;flex:1}
+.knowledge-search select{flex:0 0 230px}
+.knowledge-items{display:flex;flex-direction:column;gap:9px}
+.knowledge-entry{display:flex;align-items:center;gap:14px;background:#252638;border:1px solid #444156;border-radius:15px;padding:13px 16px}
+.knowledge-symbol{flex:0 0 45px;width:45px;height:45px;border-radius:13px;display:grid;place-items:center;background:#bbadf0;color:#292438;font-size:22px}
+.knowledge-entry:nth-child(3n+2) .knowledge-symbol{background:#f9b88c}
+.knowledge-entry:nth-child(3n) .knowledge-symbol{background:#b7e6cb}
+.knowledge-info{flex:1;min-width:0}
+.knowledge-info strong{display:block;font-size:13px;line-height:1.4;overflow-wrap:anywhere}
+.knowledge-info small{color:#aaa7c2;font-size:11px;display:block;margin-top:5px}
+.knowledge-label{white-space:nowrap;font-size:10px;font-weight:850;padding:5px 9px;border:1px solid #66607c;border-radius:100px;color:#e8c8a4}
+.knowledge-label.ready{border-color:#7cb998;color:#b5efce;background:#286b4a30}
+.knowledge-dialog{width:min(590px,calc(100vw - 24px))}
+.knowledge-import{padding:30px}
+.knowledge-import p{color:#bbb5cc;line-height:1.6}
+.knowledge-import input{margin:15px 0}
+.knowledge-meter{height:8px;border-radius:12px;background:#3e3a50;overflow:hidden}
+.knowledge-meter span{display:block;width:0;height:100%;background:linear-gradient(90deg,#baa5f7,#bde5be);transition:width .2s}
+@media(max-width:720px){
+.knowledge-counts{flex-wrap:wrap}
+.knowledge-search{flex-direction:column}
+.knowledge-search select{flex-basis:auto}
+.knowledge-entry{flex-wrap:wrap}
+.knowledge-label{order:3;margin-left:59px}
+.knowledge-entry .ghost{order:4}
+.knowledge-import{padding:20px}
+}
+@media(max-width:400px){
+.vault-tab{font-size:10px;padding:9px 3px;letter-spacing:-.02em}
+.knowledge-symbol{flex-basis:36px;width:36px;height:36px}
+.knowledge-label{margin-left:0}
+}
