@@ -1,6 +1,7 @@
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
 import { installVaultUpgrade } from "./vault-upgrade.js";
 import { installKnowledge } from "./vault-knowledge.js";
+import { installConnectors } from "./vault-connectors.js";
 
 const $ = (id) => document.getElementById(id);
 const CONFIG_KEY = "ht_vault_config_v1";
@@ -463,4 +464,6 @@ const knowledge = installKnowledge({
   getUser: () => user, getRole: () => role,
   reload: loadAssets, openDetail, bytes
 });
+const connectors = installConnectors({ $, esc, notice, getDb: () => db, getRole: () => role });
+window.addEventListener("vault-connectors-open", () => connectors.refresh());
 initClient();
