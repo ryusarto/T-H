@@ -36,6 +36,12 @@ Os materiais foram recuperados da **Library do ChatGPT**, e não dos repositóri
 
 **Não comitar os PNGs em um GitHub público.** Permissões de artistas e direitos devem ser revisados antes de redistribuir. Para a primeira importação, nenhum arquivo exige chave secreta no navegador; o login e as políticas RLS permitem apenas usuários autorizados.
 
+## Integrações REST e MCP para outras IAs
+
+Gateway publicado no Supabase T&H: https://ztxxqeifbxnecicgaxpj.supabase.co/functions/v1/ht-vault/mcp
+
+Há uma aba **Integrações** no site para administradores criarem tokens limitados por projeto, com expiração, revogação e opção separada de download. Consulte [o guia de integração](docs/AI_INTEGRATION.md) para configurar Claude, Cursor ou outro cliente HTTP/MCP compatível. Os originais continuam privados, e um token emitido pelo Vault nunca é uma chave service_role do Supabase. **O teste de ponta a ponta requer cadastrar o primeiro administrador e importar as imagens.**
+
 ## O que é
 
 Uma fonte de verdade para sprites, cenários, animações, props, VFX, UI, áudio e arquivos 3D. O arquivo original fica no **Supabase Storage** (bucket privado); informações pesquisáveis e histórico de versões ficam no **Supabase Postgres**; o código e a documentação ficam neste repositório GitHub.
