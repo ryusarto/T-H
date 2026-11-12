@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0d0d0f">
+  <meta name="description" content="H&T Vault — biblioteca de sprites e assets do estúdio H&T.">
+  <title>H&T Vault — Asset Library</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div class="ambient" aria-hidden="true"></div>
+  <div class="shell">
+    <header class="topbar">
+      <a class="brand" href="./" aria-label="H&T Vault">
+        <span class="brand-sign">H<span>&</span>T</span>
+        <span class="brand-divider"></span>
+        <span class="brand-sub">VAULT <small>ASSET LIBRARY</small></span>
+      </a>
+      <div class="top-actions">
+        <span class="online" id="connectionStatus"><span class="dot"></span> NÃO CONECTADO</span>
+        <span class="member-email" id="memberEmail"></span>
+        <button class="ghost small hidden" id="logoutBtn" type="button">Sair</button>
+      </div>
+    </header>
+
+    <main>
+      <section class="screen welcome" id="setupScreen">
+        <div class="eyebrow"><span class="eyeline"></span> PRIMEIRO ACESSO / SETUP</div>
+        <h1>O universo criativo<br>em um só lugar<span class="accent">.</span></h1>
+        <p class="lead">Sprites, personagens, cenários e animações organizados para viver em mais de um jogo. Conecte a nuvem da H&T para iniciar sua biblioteca.</p>
+        <form id="setupForm" class="panel form-panel">
+          <div class="panel-heading"><span>01 / CONEXÃO</span><span class="muted">SUPABASE</span></div>
+          <label for="supabaseUrl">Project URL</label>
+          <input id="supabaseUrl" type="url" placeholder="https://seu-projeto.supabase.co" required autocomplete="off">
+          <label for="supabaseKey">Publishable / anon key</label>
+          <input id="supabaseKey" type="text" placeholder="sb_publishable_... ou chave anon" required autocomplete="off">
+          <p class="micro">Use somente a chave pública. Nunca informe a secret key nem a service_role. A configuração fica neste navegador.</p>
+          <button class="primary" type="submit">Conectar biblioteca <span>↗</span></button>
+        </form>
+        <div class="setup-foot">GITHUB / CÓDIGO &nbsp;·&nbsp; SUPABASE / DADOS + STORAGE &nbsp;·&nbsp; H&T / CRIAÇÃO</div>
+      </section>
+
+      <section class="screen welcome hidden" id="authScreen">
+        <div class="eyebrow"><span class="eyeline"></span> H&T / ACESSO RESTRITO</div>
+        <h1>Seu acervo.<br>Nossas histórias<span class="accent">.</span></h1>
+        <p class="lead">Acesse a biblioteca de assets dos projetos H&T, IKIRU e artistas parceiros.</p>
+        <form class="panel form-panel" id="loginForm">
+          <div class="panel-heading"><span>ENTRAR NA VAULT</span><span class="muted">MAGIC LINK</span></div>
+          <label for="emailInput">E-mail autorizado</label>
+          <input id="emailInput" type="email" required placeholder="voce@estudio.com" autocomplete="email">
+          <button class="primary" type="submit">Receber link de acesso <span>↗</span></button>
+          <p class="micro" id="loginHint">Um link de acesso será enviado por e-mail.</p>
+        </form>
+        <button type="button" class="text-action" id="changeConnectionBtn">Trocar configuração da nuvem</button>
+      </section>
+
+      <section class="screen welcome hidden" id="accessScreen">
+        <div class="eyebrow"><span class="eyeline"></span> ACESSO PENDENTE</div>
+        <h1>Conta encontrada.<br>Acesso em análise<span class="accent">.</span></h1>
+        <p class="lead">Seu login funcionou, mas este e-mail ainda não foi incluído na equipe da H&T. Um administrador precisa adicioná-lo à tabela de membros no Supabase.</p>
+        <div class="panel form-panel"><p id="pendingEmail"></p><button class="secondary" id="retryAccessBtn" type="button">Verificar acesso novamente</button></div>
+      </section>
+
+      <section class="screen hidden" id="libraryScreen">
+        <div class="dashboard-heading">
+          <div>
+            <div class="eyebrow"><span class="eyeline"></span> H&T STUDIO / ASSET MANAGEMENT</div>
+            <h1>Biblioteca<span class="accent">.</span></h1>
+            <p class="intro">Um arquivo vivo para todos os mundos que estamos construindo.</p>
+          </div>
+          <button class="primary upload-main" id="openUploadBtn" type="button"><span class="plus">+</span> Adicionar asset</button>
+        </div>
+
+        <div class="metrics">
+          <div class="metric"><span>TOTAL DE ARQUIVOS</span><strong id="totalCount">00</strong></div>
+          <div class="metric"><span>ARTISTAS</span><strong id="artistCount">00</strong></div>
+          <div class="metric"><span>PROJETOS</span><strong id="projectCount">00</strong></div>
+          <div class="metric"><span>NUVEM</span><strong class="metric-label">SUPABASE <span class="cloud-dot"></span></strong></div>
+        </div>
+
+        <div class="section-header">
+          <div><span class="section-index">01 —</span> <h2>Acervo digital</h2></div>
+          <button class="ghost small" type="button" id="exportBtn">↓ Exportar catálogo JSON</button>
+        </div>
+        <div class="toolbar">
+          <div class="searchbox"><span>⌕</span><input id="searchInput" type="search" placeholder="Buscar personagem, artista, projeto, tag..." aria-label="Buscar assets"></div>
+          <select id="kindFilter" aria-label="Filtrar categoria">
+            <option value="all">Todas as categorias</option>
+            <option value="character">Personagens</option>
+            <option value="environment">Cenários</option>
+            <option value="animation">Animações</option>
+            <option value="prop">Objetos / Props</option>
+            <option value="vfx">VFX</option>
+            <option value="ui">Interface</option>
+            <option value="audio">Áudio</option>
+            <option value="3d">3D</option>
+            <option value="other">Outros</option>
+          </select>
+          <button class="ghost small" type="button" id="refreshBtn" title="Atualizar catálogo">↻</button>
+        </div>
+
+        <div class="library-meta"><span id="resultCount">0 ASSETS ENCONTRADOS</span><span class="muted">ORIGINAIS PRESERVADOS · VERSÕES INDEPENDENTES</span></div>
+        <div class="asset-grid" id="assetGrid"></div>
+        <div class="empty-state hidden" id="emptyState">
+          <div class="empty-icon">✳</div>
+          <h3>Nenhum asset por aqui.</h3>
+          <p>Cadastre o primeiro personagem, sprite ou cenário e comece a construir o universo H&T.</p>
+        </div>
+      </section>
+    </main>
+
+    <footer><span>© H&T STUDIO <span class="muted">/ THE CREATIVE ARCHIVE</span></span><span>BUILT FOR WORLDS YET TO EXIST</span><span>V0.1 / PRIVATE VAULT</span></footer>
+  </div>
+
+  <dialog id="uploadDialog" class="modal">
+    <form id="uploadForm">
+      <div class="modal-head"><div><div class="eyebrow">NOVO ITEM / 001</div><h2>Adicionar asset<span class="accent">.</span></h2></div><button class="icon-button" type="button" id="closeUploadBtn" aria-label="Fechar">×</button></div>
+      <div class="dropzone" id="dropzone">
+        <input id="assetFile" name="file" type="file" required accept="image/*,.ase,.aseprite,.psd,.glb,.gltf,.fbx,.obj,.wav,.mp3,.ogg,.json,.zip,.webm,.mp4,.atlas">
+        <strong>Arraste seu arquivo ou clique para selecionar</strong>
+        <span id="fileName">PNG, GIF, WEBP, PSD, ASEPRITE, JSON, ZIP, GLB, ÁUDIO…</span>
+      </div>
+      <div class="form-grid">
+        <div class="field full"><label for="assetTitle">Nome do asset *</label><input id="assetTitle" name="title" required maxlength="160" placeholder="Ryuchi — Percussionista / Idle"></div>
+        <div class="field"><label for="assetKind">Categoria *</label><select id="assetKind" name="kind" required><option value="character">Personagem</option><option value="environment">Cenário</option><option value="animation">Animação</option><option value="prop">Prop / Objeto</option><option value="vfx">VFX</option><option value="ui">UI</option><option value="audio">Áudio</option><option value="3d">3D</option><option value="other">Outros</option></select></div>
+        <div class="field"><label for="assetRights">Direito de uso *</label><select id="assetRights" name="rights"><option value="internal">Uso interno H&T</option><option value="artist-approved">Autorizado pelo artista</option><option value="restricted">Restrito / Cliente</option></select></div>
+        <div class="field"><label for="assetArtist">Artista</label><input id="assetArtist" name="artist" placeholder="Ryuchi"></div>
+        <div class="field"><label for="assetProject">Projeto / Jogo</label><input id="assetProject" name="project" placeholder="Salvadores Nacionais"></div>
+        <div class="field full"><label for="assetTags">Tags (separadas por vírgula)</label><input id="assetTags" name="tags" placeholder="pixelart, 2d, idle, personagem"></div>
+        <div class="field full"><label for="assetDescription">Descrição / Observações</label><textarea id="assetDescription" name="description" rows="3" placeholder="Poses, direções, orientações, paleta, direitos e referências."></textarea></div>
+      </div>
+      <p class="micro">Se já existir um asset com o mesmo artista, projeto, nome e categoria, uma nova versão será criada, preservando os originais.</p>
+      <div class="modal-actions"><button class="ghost" type="button" id="cancelUploadBtn">Cancelar</button><button class="primary" type="submit" id="saveAssetBtn">Enviar para a nuvem <span>↗</span></button></div>
+    </form>
+  </dialog>
+
+  <dialog id="detailDialog" class="modal detail-modal">
+    <div id="detailBody"></div>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
