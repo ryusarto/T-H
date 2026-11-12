@@ -18,6 +18,24 @@ O catálogo ainda está vazio e a autenticação depende de duas etapas manuais:
 
 **Importante:** o ZIP é criado localmente no navegador, não é um ZIP público permanente hospedado na nuvem. Projetos grandes exigem uma etapa posterior com geração de pacotes no servidor, limites de tamanho e distribuição autorizada. A integração com GitHub é por metadados e caminho de destino, **não** faz commit automático de binários.
 
+## Conhecimento dos jogos — importação inicial
+
+Foram indexados **73 materiais** na tabela privada `knowledge_entries` do Supabase T&H: **20** de *Torii & Hutukara* e **53** de *Salvadores Nacionais*. A indexação é um catálogo de metadados; **o bucket privado ainda não contém os binários**.
+
+Os arquivos originais foram reunidos em dois ZIPs para importação local. Cada ZIP contém `manifest.json` (`ht.vault.import.v1`) e `images/` com pranchetas completas; os hashes SHA-256 são verificados pelo importador antes do upload.
+
+### Como colocar os PNGs no Vault
+
+1. Baixe `H&T_TORII_HUTUKARA_ASSETS.zip` e `H&T_SALVADORES_NACIONAIS_ASSETS.zip` nos anexos da conversa de preparação.
+2. Abra a versão publicada do site, faça login como membro `editor` ou `admin`.
+3. Entre em **Conhecimento → Importar ZIP** e escolha um pacote por vez (recomenda-se desktop por causa do tamanho total).
+4. O navegador valida o manifesto e os hashes, envia os originais ao bucket privado `vault`, cadastra em `assets` e mantém a proveniência `source_origin = chatgpt-library`.
+5. Verifique os previews e prepare os recortes/frames antes de usar num jogo.
+
+Os materiais foram recuperados da **Library do ChatGPT**, e não dos repositórios `Torii-Hutukara` ou `Salvadores-Nacionais`, que ainda não têm esses arquivos. Itens foram classificados como **conceito/ficha/prancheta a preparar**, não como animações prontas. Referências com pessoas e múltiplas poses exigem revisão artística. O index foi gerado por nomes de arquivos; imagens com nomes genéricos podem precisar de identificação manual.
+
+**Não comitar os PNGs em um GitHub público.** Permissões de artistas e direitos devem ser revisados antes de redistribuir. Para a primeira importação, nenhum arquivo exige chave secreta no navegador; o login e as políticas RLS permitem apenas usuários autorizados.
+
 ## O que é
 
 Uma fonte de verdade para sprites, cenários, animações, props, VFX, UI, áudio e arquivos 3D. O arquivo original fica no **Supabase Storage** (bucket privado); informações pesquisáveis e histórico de versões ficam no **Supabase Postgres**; o código e a documentação ficam neste repositório GitHub.
