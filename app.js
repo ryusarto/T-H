@@ -3,6 +3,10 @@ import { installVaultUpgrade } from "./vault-upgrade.js";
 
 const $ = (id) => document.getElementById(id);
 const CONFIG_KEY = "ht_vault_config_v1";
+const DEFAULT_CONFIG = {
+  url: "https://ztxxqeifbxnecicgaxpj.supabase.co",
+  key: "sb_publishable_jHrhtSqGnha2Mja8JmgQ3Q_BJW7y42r"
+}; // Public (publishable) browser key only. Never embed secret/service_role.
 const MAX_FILE_SIZE = 50 * 1024 * 1024;
 const kindNames = {
   character: "Personagem", environment: "Cenário", animation: "Animação",
@@ -88,8 +92,7 @@ function showPending() {
   $("logoutBtn").classList.remove("hidden");
 }
 async function initClient() {
-  const saved = localStorage.getItem(CONFIG_KEY);
-  if (!saved) return showSetup();
+  const saved = localStorage.getItem(CONFIG_KEY) || JSON.stringify(DEFAULT_CONFIG);
   try {
     const conf = JSON.parse(saved);
     db = createClient(conf.url, conf.key);
