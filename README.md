@@ -2,6 +2,22 @@
 
 Biblioteca central de assets da **H&T**, estúdio de jogos de Ryuchi e Franco, The Sir!, com foco inicial nos projetos dos artistas da IKIRU.
 
+## Conexão T&H (12/11/2026)
+
+O frontend está **pré-configurado** com o projeto Supabase **T&H** (`ztxxqeifbxnecicgaxpj`) usando apenas a **publishable key pública**. Não é necessário informar URL/chave na primeira visita. As migrações `ht_vault_base` e `ht_vault_schema_v2` e o bucket privado `vault` já foram aplicados ao projeto T&H.
+
+O catálogo ainda está vazio e a autenticação depende de duas etapas manuais: hospedar o site em HTTPS e cadastrar essa URL em **Supabase → Authentication → URL Configuration** (Site URL e Redirect URLs); depois, cada membro deve fazer login pelo link recebido e um administrador deve conceder a função na tabela `public.memberships`. O site não publica arquivos privados anonimamente. O botão de compartilhar um pacote gera link interno com autorização H&T.
+
+### Campos e recursos v2
+- Relações normalizadas artista → projeto → personagem → asset → animação.
+- Metadados: capítulo, cenário, direção, estado, FPS, quadros, referências, créditos, responsável e integração HTML/GitHub.
+- Coleções privadas e associação de assets sem duplicar arquivos.
+- Prancheta com zoom, histórico de versões e múltiplos arquivos de apoio.
+- Montagem de pacote em ZIP (originais + anexos + `manifest.json`) no navegador; links internos de pacotes salvos exigem login.
+- Filtros facetados no catálogo com busca e seleção por toque para pacotes.
+
+**Importante:** o ZIP é criado localmente no navegador, não é um ZIP público permanente hospedado na nuvem. Projetos grandes exigem uma etapa posterior com geração de pacotes no servidor, limites de tamanho e distribuição autorizada. A integração com GitHub é por metadados e caminho de destino, **não** faz commit automático de binários.
+
 ## O que é
 
 Uma fonte de verdade para sprites, cenários, animações, props, VFX, UI, áudio e arquivos 3D. O arquivo original fica no **Supabase Storage** (bucket privado); informações pesquisáveis e histórico de versões ficam no **Supabase Postgres**; o código e a documentação ficam neste repositório GitHub.
