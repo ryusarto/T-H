@@ -132,9 +132,13 @@ export function installVaultUpgrade(ctx) {
     sel("collectionsPanel").classList.toggle("hidden",tab !== "collections");
     sel("packsPanel").classList.toggle("hidden",tab !== "packs");
     if(sel("knowledgePanel")) sel("knowledgePanel").classList.toggle("hidden",tab !== "knowledge");
+    if(sel("connectorsPanel")) {
+      sel("connectorsPanel").classList.toggle("hidden",tab !== "connectors");
+      if(tab === "connectors") window.dispatchEvent(new Event("vault-connectors-open"));
+    }
     for(const selector of [".section-header",".toolbar",".facet-toolbar",".library-meta","#assetGrid","#emptyState"]) {
       const el = sel("libraryScreen").querySelector(selector);
-      if(el) el.classList.toggle("vault-hidden", tab === "collections" || tab === "knowledge");
+      if(el) el.classList.toggle("vault-hidden", tab === "collections" || tab === "knowledge" || tab === "connectors");
     }
     sel("selectionRibbon").classList.toggle("hidden",tab !== "packs");
     if(tab === "packs") {
